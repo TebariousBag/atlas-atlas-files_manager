@@ -43,6 +43,7 @@ async nbUsers() {
     return await users.countDocuments();
   } catch (error) {
     console.error('counting users failed', error);
+    return 0;
   }
 }
 
@@ -53,6 +54,7 @@ async nbUsers() {
       return await files.countDocuments();
     } catch (error) {
       console.error('error counting files', error);
+      return 0;
     }
   }
 
