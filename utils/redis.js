@@ -1,55 +1,71 @@
-// import library
+// import the library
 import { createClient } from 'redis';
 
 
 class RedisClient {
-  constructor () {
-    // create the client
-    this.rClient = createClient();
-    this.connection = false;
-    this.rClient.on('error', (err) => {
-      console.log(err);
-      this.connection = false;
-    });
-    this.rClient.on('connect', () => {
-      this.connection = true;
-    });
+  constructor() {
+    // create client
+    this.client = createClient();
+    // is it connected? found isOpen instead
+    // this.connected = false;
+    // on cases, error or connected
+    this.client.on('error', (err) => console.log('RedisClient Error:', err));
+    this.client.on('connect', () => console.log('we are connected'));
+    // connect to client
+    this.connect();
   }
 
-  isAlive () {
-    return this.connection;
-  }
-  
-  async get(key) {
-    const data = this.rClient.get(key);
+  async connect() {
     try {
-      return await data
-  } catch (err) {
-      console.log('GET error', err);
-      return null;
-  }
-  }
-
-  async set(key, value, duration) {
-    const data = this.rClient.set(key, value, duration);
-    try {
-      return await data[3]
+      await this.client.connect();
+      // not needed anymore with isOpen
+       // this.connected = true;
     } catch (err) {
-      console.log('SET error', err)
+      console.error('conncetion failed', err);
     }
   }
 
+  // is it connected?
+  // is open shows real time status
+  isAlive() {
+    return this.client.isOpen;
+  }
+
+  // get the value by key
+  async get(key) {
+    try {
+      // get key
+      const data = await this.client.get(key);
+      return data;
+    } catch (err) {
+      console.error('could not get', err);
+      return null
+    }
+  }
+
+  // store with an epiration
+  async set(key, value, duration) {
+    try {
+      // need to make sure value is a string
+      // and set with expiration
+      await this.client.setEx(key, duration, String(value));
+    } catch (err) {
+      console.error('could not set', err);
+    }
+    }
+
+  // delete the key
   async del(key) {
     try {
-      this.rClient.del(key);
+      await this.client.del(key);
     } catch (err) {
-      console.log('DEL error', err)
+      console.error('could not delete', err);
     }
   }
-
 }
 
-// create the new object redisClient
+// create redisClient
 const redisClient = new RedisClient();
-// export function
+
+// export always export
 export default redisClient;
