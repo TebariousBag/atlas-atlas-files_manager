@@ -35,6 +35,18 @@ isAlive() {
   return this.connected;
 }
 
+async nbUsers() {
+  try {
+    // first get collection of users
+    const users = this.db.collection('users');
+    // then count the documents of users
+    return await users.countDocuments();
+  } catch (error) {
+    console.error('counting failed', error);
+    return 0;
+  }
+}
+
 }
 // always export
 const dbClient = new DBClient();
