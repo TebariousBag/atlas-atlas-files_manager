@@ -42,10 +42,19 @@ async nbUsers() {
     // then count the documents of users
     return await users.countDocuments();
   } catch (error) {
-    console.error('counting failed', error);
-    return 0;
+    console.error('counting users failed', error);
   }
 }
+
+  async nbFiles() {
+    try {
+      // first get collection of files
+      const files = this.db.collection('files');
+      return await files.countDocuments();
+    } catch (error) {
+      console.error('error counting files', error);
+    }
+  }
 
 }
 // always export
