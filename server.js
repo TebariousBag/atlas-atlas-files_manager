@@ -5,6 +5,8 @@ const app = express();
 
 // port 5500 for me
 const PORT = process.env.PORT || 5503;
+// need to be able to use json
+app.use(express.json());
 // load routes from routes/index.js
 app.use('/', routes);
 // listen on port

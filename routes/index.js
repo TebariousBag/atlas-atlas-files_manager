@@ -1,9 +1,12 @@
 import express from 'express';
 import AppController from '../controllers/AppController.js';
+import UsersController from '../controllers/UsersController.js';
 
 const newRouter = express.Router();
-// our endpoints
+// our endpoints for get status and stats
 newRouter.get('/status', AppController.getStatus);
 newRouter.get('/stats', AppController.getStats);
+//endpoint for post
+newRouter.post('/users', UsersController.postNew);
 // and then export
 export default newRouter;

@@ -23,7 +23,7 @@ class DBClient {
       await this.client.connect();
       this.connected = true;
       this.db = this.client.db(this.files_manager);
-      console.log('we are connected');
+      console.log('we are connected db');
     } catch (err) {
       console.error('we are not connected', err);
       this.connected = false;
