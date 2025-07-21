@@ -10,7 +10,7 @@ newRouter.get('/stats', AppController.getStats);
 //endpoint for post
 newRouter.post('/users', UsersController.postNew);
 // endpoints or authconroller
-router.get('/connect', AuthController.getConnect);
-router.get('/disconnect', AuthController.getDisconnect);
+newRouter.get('/connect', AuthController.getConnect);
+newRouter.get('/disconnect', AuthController.getDisconnect);
 // and then export
 export default newRouter;
