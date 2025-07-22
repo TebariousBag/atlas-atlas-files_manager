@@ -12,5 +12,7 @@ newRouter.post('/users', UsersController.postNew);
 // endpoints or authconroller
 newRouter.get('/connect', AuthController.getConnect);
 newRouter.get('/disconnect', AuthController.getDisconnect);
+// endpoint for getme
+newRouter.get('/users/me', UsersController.getMe);
 // and then export
 export default newRouter;
