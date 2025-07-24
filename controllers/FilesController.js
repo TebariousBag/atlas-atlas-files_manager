@@ -90,6 +90,68 @@ class FilesController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  static async getShow(req, res) {
+    // get our token from header
+    const token = req.header('X-Token');
+    // and authourized token userid
+    const userId = await redisClient.get(`auth_${token}`);
+    // error check if no user id
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    // get id from request
+    const fileId = req.params.id;
+
+    let file;
+
+    try {
+      file = await dbClient.db.collection('files').findOne({
+        _id: new ObjectId(fileId),
+        userId: new ObjectId(userId),
+      });
+    } catch (err) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+    if (!file) return res.status(404).json({ error: 'Not found' });
+    // return the file document with status 200
+    return res.status(200).json(file);
+  }
+
+  static async getIndex(req, res) {
+    // as usual get our token
+    const token = req.header('X-Token');
+    const userId = await redisClient.get(`auth_${token}`);
+    // error check if no userid
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    // setup variables for pagination
+    // i hate pagination
+    const parentId = req.query.parentId || '0';
+    const page = parseInt(req.query.page, 10) || 0;
+    const pageSize = 20;
+
+    const query = {
+      userId: new ObjectId(userId),
+      parentId: parentId === '0' ? '0' : parentId,
+    };
+
+    try {
+      const files = await dbClient.db.collection('files')
+        .aggregate([
+          { $match: query },
+          { $skip: page * pageSize },
+          { $limit: pageSize },
+        ])
+        .toArray();
+      // return our files in json format
+      return res.status(200).json(files);
+    } catch (err) {
+      return res.status(500).json({ error: 'Server error' });
+    }
+  }
+
 }
 // always export
 export default FilesController;

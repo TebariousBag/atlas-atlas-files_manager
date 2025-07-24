@@ -17,5 +17,8 @@ newRouter.get('/disconnect', AuthController.getDisconnect);
 newRouter.get('/users/me', UsersController.getMe);
 // endpoint for postupload
 newRouter.post('/files', FilesController.postUpload);
+// endpoint for getshow and getindex
+newRouter.get('/files/:id', FilesController.getShow);
+newRouter.get('/files', FilesController.getIndex);
 // and then export
 export default newRouter;
